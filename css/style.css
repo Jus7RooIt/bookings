@@ -1,0 +1,116 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat&display=swap");
+
+body,
+html,
+input {
+  font-family: "Montserrat", sans-serif;
+  font-size: 12pt;
+}
+
+#visualization {
+  position: relative;
+}
+
+.menu {
+  position: absolute;
+  display: table-cell;
+  vertical-align: middle;
+  bottom: -50px;
+  right: 0;
+  margin: 10px;
+  z-index: 9999;
+}
+
+.range {
+  margin: -12px 12px 0 0;
+  background: #333;
+}
+
+/*label,
+ input {
+  vertical-align: middle;
+  padding: 0px;
+  margin: 0px;
+  height: 20px;
+  margin-top: -12px;
+  margin-right: 12px;
+} */
+
+.buttons-menu {
+  background-color: #555;
+  color: #fff;
+  padding: 4px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.buttons-menu:hover {
+  opacity: 0.9;
+}
+
+/* custom css */
+h1 {
+  text-align: center;
+  padding: 1rem;
+
+}
+
+h2 {
+  /* color: darkgreen; */
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+h3 {
+  margin-bottom: 1rem;
+}
+
+.ref-item-box {
+  height: 0.5rem;
+  width: 0.5rem;
+  border: 1px solid lightgray;
+  margin: 0 0.2rem;
+
+}
+
+.ref-item-description {
+  display: inline-block;
+  height: auto;
+}
+
+.vis-selected{
+  background-color: #28a745!important
+}
+
+.references {
+  font-size: x-small;
+}
+
+button {
+  border: none;
+  background: transparent;
+}
+.arrow{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: 1rem auto auto auto;
+  z-index: 9999;
+  width: 50px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid lightgray;
+  font-size: 1.5rem;
+  color: gray
+}
+
+.arrow-left {
+  left: 0;
+}
+.arrow-right {  
+  right: 0;
+}
+
