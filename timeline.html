@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <title>Timeline</title>
+    <!-- note: moment.js must be loaded before vis.js, else vis.js uses its embedded version of moment.js -->
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/full-style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Import Vue.js -->
+    <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
+</head>
+
+<body>
+    <div id="app" class="container ">
+        <h1>Timeline</h1>
+        <div id="booking" class="p-4 shadow mt-2 mb-4">
+            <h2 class=" text-success">Reservar</h2>
+            <form action="" @submit.prevent="onSubmit">
+                <input type="hidden" v-model="bookingId">
+                <div class="row m-0">
+                    <div class="col-sm-4 ">
+                        <div class="row">
+                            <label for="name">Nombre</label>
+                        </div>
+                        <div class="row">
+                            <input type="text" v-model="name" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-2 ">
+                        <div class="row">
+                            <label for="date">Fecha</label>
+                        </div>
+                        <div class="row">
+                            <input type="date" v-model="date" class="form-control" id="date" name="id">
+                        </div>
+                    </div>
+                    <div class="col-sm-2 ">
+                        <div class="row">
+                            <label for="hourFrom">Desde</label>
+                        </div>
+                        <div class="row">
+                            <input type="time" v-model="from" class="form-control" id="hourFrom" name="hourFrom">
+                        </div>
+                    </div>
+                    <div class="col-sm-2 ">
+                        <div class="row">
+                            <label for="hourTo">Hasta</label>
+                        </div>
+                        <div class="row">
+                            <input type="time" v-model="to" class="form-control" id="hourTo" name="hourTo">
+                        </div>
+                    </div>
+                    <div class="col-sm-2 ">
+                        <div class="row">
+                            <label for="save" style="color:white">Guardar</label>
+                        </div>
+                        <div class="row">
+                            <!-- <input type="submit" value="Enviar 2"> -->
+                            <button class="btn btn-success py-2 px-4 align-items">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="pruebas">
+            <ul>
+                <li v-for="booking in newBookings">
+                    {{'Nombre: '+ booking.name + ' Fecha: ' + booking.date + ' Desde: ' + booking.from + ' Hasta: '+ booking.to }}
+
+
+                </li>
+            </ul>
+        </div>
+
+        <div id="schedule" class="my-4 py-3">
+            <h3 id="fit">Agenda de Reservas</h3>
+            <div id="visualization">
+                <div id="references" class="offset-7 references">
+                    <div class="row mx-3 justify-content-end">
+                        <div class="row align-items-center mx-2">
+                            <div class="ref-item-box" style="background-color: white;"></div>
+                            <div class="ref-item-description ">Disponible</div>
+                        </div>
+                        <div class="row align-items-center mx-2">
+                            <div class="ref-item-box bg-warning"></div>
+                            <div class="ref-item-description ">Reservado</div>
+                        </div>
+
+                        <div class="row align-items-center mx-2">
+                            <div class="ref-item-box bg-success"></div>
+                            <div class="ref-item-description ">Reserva Actual</div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="menu">
+                    <input style="display:none;" id="sliderZoom" type="range" class="range" name="a" min="-1" max="1"
+                        step="0.1" value="0" />
+                    <!-- <i class="material-icons dp48 buttons-menu" id="fit">home</i> -->
+                    <!-- <i class="material-icons dp48 buttons-menu" id="moveLeft">arrow_back</i> -->
+                    <!-- <i class="fa fa-arrow-left" aria-hidden="true" id="moveLeft"></i>
+                    <i class="material-icons dp48 buttons-menu" id="moveRight">arrow_forward</i> -->                  
+                    <!-- <button id="moveRight"><i class="fa fa-chevron-right" aria-hidden="true"></i></button> -->
+                </div>
+                <div class="arrow arrow-left bg-white shadow btn btn-light" id="moveLeft">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                </div>
+                <div class="arrow arrow-right bg-white shadow btn btn-light" id="moveRight">
+                    <div class="content-arrow">
+                        <i class="fa fa-chevron-right " aria-hidden="true"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="book-list">
+            <h3>Reservas</h3>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Horario</th>
+                        <th>Accion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="booking in bookings" v-on:click="selectBooking(booking.id)">
+                        <td> {{booking.name}} </td>
+                        <td> de {{booking.from}} a {{booking.to}} </td>
+                        <td><button v-on:click="removeBooking(booking.id)"><i class="fa fa-trash btn btn-outline-danger"
+                                    aria-hidden="true"></i></button></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- Import App -->
+    <script src="./js/Vue/main.js"></script>
+
+    <!-- Mount App -->
+    <script>
+        const mountedApp = app.mount('#app')
+    </script>
+
+
+    <!-- Import Components -->
+    <!-- <script src="./components/ProductDisplay.js"></script> -->
+
+
+
+    <!-- My Js -->
+    <script src="js/moment.js"></script>
+
+
+    <script src="js/vis.js"></script>
+
+    <script src="js/script.js"></script>
+
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
+    </script>
+
+
+
+</body>
+
+</html>
